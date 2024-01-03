@@ -15,15 +15,14 @@ jobs:
 
     steps: #job을 이루는 아주 작은 작업 단위
     - name: 체크아웃 # step의 이름
-      uses: actions/checkout@v3 # uses는 다른 사람이 만들어둔 미리 생성된 workflow를 실행하는 것
-			# 가상 머신에서 내 코드를 체크아웃 (가상 머신에서 내 코드를 불러온다고 생각하면 됨)
+      uses: actions/checkout@v3 # uses는 다른 사람이 만들어둔 미리 생성된 workflow를 실행하는 것, 가상 머신에서 내 코드를 체크아웃 (가상 머신에서 내 코드를 불러온다고 생각하면 됨)
 
     - name: Set up JDK 17 
       uses: actions/setup-java@v3 # Java 환경 세팅
-	      with:
+      with:
         distribution: 'corretto'
         java-version: '17'
-
+	
     - name: application.yml 생성 # 작업을 하고 싶은 폴더로 이동
       run: | 
           cd src/main/resources 
