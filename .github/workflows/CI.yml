@@ -1,13 +1,10 @@
-# workflow 이름 - 이름을 설정하면 github의 actions 탭에서 확인가능
-name: CI
+name: CI # workflow 이름 - 이름을 설정하면 github의 actions 탭에서 확인가능
 
-# 트리거 - develop 브랜치에 PR이 발생했을때 실행되도록 설정
-on:
+on: # 트리거 - develop 브랜치에 PR이 발생했을때 실행되도록 설정
   pull_request: 
     branches: [ "develop" ]
 
-# workflow의 세부 작업단위인 job들 정의
-jobs:
+jobs: # workflow의 세부 작업단위인 job들 정의
   build: #job의 이름
     runs-on: ubuntu-22.04  # virtual machine의 os 선택(서버를 배포할 ec2의 버전)
     env: # workflow 안에서 사용할 수 있는 환경 변수를 map 형식으로 설정합니다. (key: value)
