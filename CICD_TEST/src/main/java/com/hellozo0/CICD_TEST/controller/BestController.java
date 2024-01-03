@@ -31,5 +31,7 @@ public class BestController {
     @GetMapping()
     public BaseApiResponse<Object> getEditorChoice(){
         return new BaseApiResponse<>("BEST 책 리스트 불러오기 완료", bestService.getBestBookList());
+
+
     }
 }
