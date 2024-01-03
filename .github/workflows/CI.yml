@@ -22,13 +22,12 @@ jobs:
       with:
         distribution: 'corretto'
         java-version: '17'
-	
+
     - name: application.yml 생성 # 작업을 하고 싶은 폴더로 이동
       run: | 
           cd src/main/resources 
           echo "${{ secrets.APPLICATION }}" > ./application.yml
-      working-directory: ${{ env.working-directory }}
-			# github에서 repository에 비밀 설정값(secrets)을 저장할 수 있습니다. 해당 값을 불러와서 application.yaml 에 저장
+      working-directory: ${{ env.working-directory }} # github에서 repository에 비밀 설정값(secrets)을 저장할 수 있습니다. 해당 값을 불러와서 application.yaml 에 저장
 
     - name: 빌드
       run: |
