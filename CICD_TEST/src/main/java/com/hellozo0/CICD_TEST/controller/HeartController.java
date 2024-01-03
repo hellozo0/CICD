@@ -22,7 +22,7 @@ public class HeartController {
 
     private final HeartService heartService;
 
-    @Operation(summary = "책 좋아요/취소 기능", description = "책 좋아요/취소 기능 API입니다.")
+    @Operation(summary = "책 좋아요/취소", description = "책 좋아요/취소 기능 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "책 좋아요/취소 기능 처리 완료"),
             @ApiResponse(responseCode = "400", description = "유효한 책 id를 보냈는지 확인해주세요.")
