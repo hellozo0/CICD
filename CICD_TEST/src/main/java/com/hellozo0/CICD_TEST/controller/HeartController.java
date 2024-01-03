@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class HeartController {
 
-    private final HeartService heartService;
+    private final HeartService heartService; ㅣ.;;
 
     @Operation(summary = "책 좋아요/취소", description = "책 좋아요/취소 기능 API입니다.")
     @ApiResponses({
