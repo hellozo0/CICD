@@ -47,8 +47,8 @@ jobs:
 
     - name: docker image 빌드 및 푸시
       run: |
-        docker build --platform linux/amd64 -t dosopt33/CICD_test .
-        docker push dosopt33/CICD_test
+        docker build --platform linux/amd64 -t dosopt33/cicd-test .
+        docker push dosopt33/cicd-test
       working-directory: ${{ env.working-directory }}
 
   deploy-cd:      
@@ -63,6 +63,6 @@ jobs:
         username: ${{ secrets.RELEASE_SERVER_USER }}
         key: ${{ secrets.RELEASE_SERVER_KEY }}
         script: |
-          docker rm -f CICD_test
-          docker image pull dosopt33/CICD_test
-          docker run -d --name dosopt33-8080 -p 8080:8080 dosopt33/CICD_test
+          docker rm -f cicd-test
+          docker image pull dosopt33/cicd-test
+          docker run -d --name dosopt33-8080 -p 8080:8080 dosopt33/cicd-test
