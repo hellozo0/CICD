@@ -56,13 +56,12 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:    
-    - name: 도커 컨테이너 헤엥
+    - name: 도커 컨테이너 실행
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.RELEASE_SERVER_IP }}
         username: ${{ secrets.RELEASE_SERVER_USER }}
         key: ${{ secrets.RELEASE_SERVER_KEY }}
         script: |
-          docker rm -f cicd-test
-          docker image pull dosopt33/cicd-test
-          docker run -d --name dosopt33-8080 -p 8080:8080 dosopt33/cicd-test
+          cd ~
+          ./deploy.sh
