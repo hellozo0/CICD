@@ -1,0 +1,71 @@
+# workflow 이름 - 이름을 설정하면 github의 actions 탭에서 확인가능
+name: CD
+
+# 트리거 - develop 브랜치에 PR이 발생했을때 실행되도록 설정
+on:
+  pull_request: 
+    branches: [ "develop" ]
+
+# workflow의 세부 작업단위인 job들 정의
+jobs:
+  deploy-ci: #job의 이름
+    runs-on: ubuntu-22.04  # virtual machine의 os 선택(서버를 배포할 ec2의 버전)
+    env: # workflow 안에서 사용할 수 있는 환경 변수를 map 형식으로 설정합니다. (key: value)
+      working-directory: CICD_TEST
+
+    steps: #job을 이루는 아주 작은 작업 단위
+    - name: 체크아웃 # step의 이름
+      uses: actions/checkout@v3 # uses는 다른 사람이 만들어둔 미리 생성된 workflow를 실행하는 것, 가상 머신에서 내 코드를 체크아웃 (가상 머신에서 내 코드를 불러온다고 생각하면 됨)
+
+    - name: Set up JDK 17 
+      uses: actions/setup-java@v3 # Java 환경 세팅
+      with:
+        distribution: 'corretto'
+        java-version: '17'
+
+    - name: application.yml 생성 # 작업을 하고 싶은 폴더로 이동
+      run: | 
+          cd src/main/resources 
+          echo "${{ secrets.APPLICATION }}" > ./application.yml
+      working-directory: ${{ env.working-directory }}
+			# github에서 repository에 비밀 설정값(secrets)을 저장할 수 있습니다. 해당 값을 불러와서 application.yaml 에 저장
+
+    - name: 빌드
+      run: |
+          chmod +x gradlew
+          ./gradlew build -x test
+      working-directory: ${{ env.working-directory }}
+      shell: bash
+
+######## 여기까지는 CI.yaml와 동일 #########
+
+    - name: docker build 가능하도록 환경 설정
+      uses: docker/setup-buildx-action@v2.9.1
+      
+    - name: docker hub에로그인
+      uses: docker/login-action@v2.2.0
+      with:
+        username: ${{ secrets.DOCKERHUB_LOGIN_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_LOGIN_ACCESSTOKEN }}
+
+    - name: docker image 빌드 및 푸시
+      run: |
+        docker build --platform linux/amd64 -t dosopt33/CICD-test .
+        docker push dosopt33/CICD-test
+      working-directory: ${{ env.working-directory }}
+
+  deploy-cd:
+    needs: deploy-ci
+    runs-on: ubuntu-22.04
+
+    steps:    
+    - name: 도커 컨테이너 실행
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.RELEASE_SERVER_IP }}
+        username: ${{ secrets.RELEASE_SERVER_USER }}
+        key: ${{ secrets.RELEASE_SERVER_KEY }}
+        script: |
+          docker rm -f CICD-test
+          docker image pull dosopt33/CICD-test
+          docker run -d --name dosopt33-8080 -p 8080:8080 dosopt33/CICD-test
